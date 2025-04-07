@@ -2,13 +2,7 @@ import os
 import zipfile
 import pandas as pd
 import pdfplumber
-
-
-def extract_pdf_from_zip(zip_file_path, extract_path, pdf_filename):
-    with zipfile.ZipFile(zip_file_path, 'r') as zipf:
-        zipf.extract(pdf_filename, extract_path)
-    print(f"PDF extraído: {pdf_filename}")
-
+from backend.utils.file_utils import extract_pdf_from_zip
 
 def process_pdf_to_dataframe(pdf_path):
     dfs = []
@@ -47,17 +41,14 @@ def compress_csv_to_zip(csv_path, zip_path):
 
 def main(zip_file_path, processed_dir):
     pdf_filename = 'Anexo_I_Rol_2021RN_465.2021_RN627L.2024.pdf'
-
     csv_filename = 'Rol_Procedimentos.csv'
 
     pdf_path = os.path.join(processed_dir, pdf_filename)
-
-    csv_path = os.path.join(processed_dir, 'Rol_Procedimentos.csv')
-
+    csv_path = os.path.join(processed_dir, csv_filename)
     final_zip_path = os.path.join(processed_dir, 'Rol_Procedimentos_Final.zip')
 
     try:
-        extract_pdf_from_zip(zip_file_path, processed_dir, pdf_filename)
+        extract_pdf_from_zip(zip_file_path, processed_dir)
 
         full_df = process_pdf_to_dataframe(pdf_path)
 
@@ -68,10 +59,6 @@ def main(zip_file_path, processed_dir):
         if os.path.exists(pdf_path):
             os.remove(pdf_path)
             print(f"Arquivo PDF excluído: {pdf_filename}")
-
-        if os.path.exists(csv_path):
-            os.remove(csv_path)
-            print(f"Arquivo CSV excluído: {csv_filename}")
 
     except Exception as e:
         print(f"Erro durante o processamento: {str(e)}")
